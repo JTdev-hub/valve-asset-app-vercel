@@ -34,6 +34,7 @@ const CustomerForm = () => {
     showAlert,
     message,
     setShowAlert,
+    isPending,
   } = useAddUsers(() => {
     //Reset fields on success
     reset();
@@ -99,8 +100,14 @@ const CustomerForm = () => {
                 )}
               </VStack>
             </Stack>
-            <Button colorScheme="teal" size="md" marginTop={5} type="submit">
-              Submit
+            <Button
+              colorScheme="teal"
+              size="md"
+              marginTop={5}
+              type="submit"
+              disabled={isPending}
+            >
+              {isPending ? " Submitting" : "Submit"}
             </Button>
           </CardForms>
         </Flex>

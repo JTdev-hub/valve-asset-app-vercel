@@ -1,16 +1,9 @@
 import { useParams } from "react-router-dom";
 
-import {
-  Text,
-  Image,
-  HStack,
-  Stack,
-  Flex,
-  Skeleton,
-  SkeletonText,
-} from "@chakra-ui/react";
+import { Text, Image, HStack, Stack, Flex } from "@chakra-ui/react";
 import CardForms from "../components/CardForms";
 import useAssetItemDetails from "../hooks/useAssetItemDetails";
+import SkeletonLoading from "../components/SkeletonLoading";
 
 const AssetItemDetails = () => {
   const { id } = useParams();
@@ -22,8 +15,7 @@ const AssetItemDetails = () => {
     return (
       <Flex justifyContent="center">
         <CardForms>
-          <SkeletonText padding={10} />
-          <Skeleton height="500px" />
+          <SkeletonLoading loadingType="details" />
         </CardForms>
       </Flex>
     );

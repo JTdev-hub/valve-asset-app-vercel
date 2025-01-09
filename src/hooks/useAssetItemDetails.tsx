@@ -4,8 +4,9 @@ import assetItemDetailsService from "../services/assetItemDetails-service";
 
 const useAssetItemDetails = (id?: number) => {
   return useQuery<AssetItemsWithHeaders[], Error>({
-    queryKey: ["assetItemDetails"],
+    queryKey: ["assetItemDetails", id],
     queryFn: () => assetItemDetailsService.getAll(id),
+    staleTime: 5 * 6 * 1000, //Stale time set to 5 mins
   });
 };
 

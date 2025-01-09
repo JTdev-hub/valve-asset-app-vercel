@@ -1,6 +1,6 @@
 import {
   Box,
-  SkeletonText,
+  Flex,
   Table,
   TableCaption,
   TableContainer,
@@ -15,11 +15,19 @@ import useAssetItemWithHeaders from "../hooks/useAssetItemsWithHeaders";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import CardForms from "../components/CardForms";
+import SkeletonLoading from "../components/SkeletonLoading";
 
 const AssetItemTables = () => {
   const { data: assetItemsWithHeaders, isLoading } = useAssetItemWithHeaders();
 
-  if (isLoading) return <SkeletonText noOfLines={3} gap={4} />;
+  if (isLoading)
+    return (
+      <Flex justifyContent="center">
+        <CardForms>
+          <SkeletonLoading loadingType="table" />
+        </CardForms>
+      </Flex>
+    );
   return (
     <Box overflowX="auto">
       <CardForms>

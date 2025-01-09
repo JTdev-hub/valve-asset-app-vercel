@@ -7,8 +7,6 @@ import {
   Text,
   Button,
   Box,
-  Alert,
-  AlertIcon,
 } from "@chakra-ui/react";
 
 import CardForms from "../components/CardForms";
@@ -28,6 +26,7 @@ import {
 } from "../AssetFormItems";
 import { useState } from "react";
 import useAddAssetItems from "../hooks/useAddAssetItems";
+import AlertBanner from "../components/AlertBanner";
 
 const schema = z.object({
   assetHeaderId: z.number(),
@@ -61,7 +60,6 @@ const schema = z.object({
 type AssetItemsFormData = z.infer<typeof schema>;
 
 const AssetItemsForm = () => {
-  const { mutate: addAssetItems, alertMessage, isPending } = useAddAssetItems();
   const {
     register,
     handleSubmit,
@@ -69,6 +67,23 @@ const AssetItemsForm = () => {
     setValue,
     // formState: { errors },
   } = useForm<AssetItemsFormData>({ resolver: zodResolver(schema) });
+
+  const {
+    mutate: addAssetItems,
+    isSuccess,
+    showAlert,
+    isPending,
+    message,
+    setShowAlert,
+  } = useAddAssetItems(() => {
+    //Reset fields on success
+    reset();
+    setSelectedImage(null);
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  });
 
   const { data: assetHeaders } = useAssetHeaders();
 
@@ -95,16 +110,19 @@ const AssetItemsForm = () => {
 
   return (
     <>
-      {alertMessage && (
-        <Alert status="success" marginBottom={4}>
-          <AlertIcon />
-          {alertMessage}
-        </Alert>
+      {/* Display alert when success or when error */}
+      {showAlert && (
+        <AlertBanner
+          message={message}
+          isSuccess={isSuccess}
+          onClose={() => {
+            setShowAlert(false);
+          }}
+        />
       )}
       <form
         onSubmit={handleSubmit((data) => {
           addAssetItems(data);
-          reset();
         })}
       >
         <Flex justifyContent="center">
@@ -278,7 +296,13 @@ const AssetItemsForm = () => {
                 )}
               </VStack>
             </HStack>
-            <Button colorScheme="teal" size="md" marginTop={3} type="submit">
+            <Button
+              colorScheme="teal"
+              size="md"
+              marginTop={3}
+              type="submit"
+              disabled={isPending}
+            >
               {isPending ? "Submitting" : "Submit"}
             </Button>
           </CardForms>

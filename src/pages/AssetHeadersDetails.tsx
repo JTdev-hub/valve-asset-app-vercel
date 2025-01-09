@@ -1,6 +1,6 @@
 import {
   Box,
-  SkeletonText,
+  Flex,
   Table,
   TableCaption,
   TableContainer,
@@ -12,11 +12,19 @@ import {
 } from "@chakra-ui/react";
 import useCustomerAssetsHeader from "../hooks/useCustomerWithAssetHeaders";
 import CardForms from "../components/CardForms";
+import SkeletonLoading from "../components/SkeletonLoading";
 
 const AssetHeadersDetails = () => {
   const { data: assetHeaders, isLoading } = useCustomerAssetsHeader();
 
-  if (isLoading) return <SkeletonText noOfLines={3} gap={4} />;
+  if (isLoading)
+    return (
+      <Flex justifyContent="center">
+        <CardForms>
+          <SkeletonLoading loadingType="table" />
+        </CardForms>
+      </Flex>
+    );
 
   return (
     <Box overflowX="auto">

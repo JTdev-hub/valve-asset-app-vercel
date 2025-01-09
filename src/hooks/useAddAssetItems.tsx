@@ -3,8 +3,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import assetItemsService, { AssetItems } from "../services/assetItems-service";
 
-const useAddAssetItems = () => {
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+const useAddAssetItems = (onAdd: () => void) => {
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState("");
+
   const queryClient = useQueryClient();
   const mutate = useMutation<AssetItems, Error, AssetItems>({
     mutationFn: assetItemsService.create,
@@ -14,16 +16,21 @@ const useAddAssetItems = () => {
         ...(assetItem || []),
       ]);
 
-      setAlertMessage(
-        `Asset Item "${savedAssetItem.assetHeaderId}" has been created successfully!`
+      setShowAlert(true);
+      setMessage(
+        `Asset Item ${savedAssetItem.assetHeaderId} has been successfully created!`
       );
-
-      // Clear alert after 3 seconds
-      setTimeout(() => setAlertMessage(null), 3000);
+      onAdd();
+    },
+    onError: (error, savedAssetItem) => {
+      setShowAlert(true);
+      setMessage(
+        `Encountered errors while saving Asset Item ${savedAssetItem.assetHeaderId}! (${error.message})`
+      );
     },
   });
 
-  return { ...mutate, alertMessage };
+  return { ...mutate, showAlert, message, setShowAlert };
 };
 
 export default useAddAssetItems;

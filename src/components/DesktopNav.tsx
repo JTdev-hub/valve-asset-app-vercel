@@ -8,12 +8,18 @@ import {
 } from "@chakra-ui/react";
 import NAV_ITEMS from "../NavItems";
 import DesktopSubNav from "./DesktopSubNav";
+import { useState } from "react";
 
 const DesktopNav = () => {
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
+  const selectedColor = useColorModeValue("green.600", "blue.300");
 
+  const handleClick = (label: string) => {
+    setSelectedItem(label);
+  };
   return (
     <Stack direction={"row"} spacing={4}>
       {NAV_ITEMS.map((navItem) => (
@@ -25,11 +31,14 @@ const DesktopNav = () => {
                 p={2}
                 fontSize={"sm"}
                 fontWeight={500}
-                color={linkColor}
+                color={
+                  selectedItem === navItem.label ? selectedColor : linkColor
+                }
                 _hover={{
                   textDecoration: "none",
                   color: linkHoverColor,
                 }}
+                onClick={() => handleClick(navItem.label)} // Set the selected item
               >
                 {navItem.label}
               </Box>

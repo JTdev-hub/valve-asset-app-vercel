@@ -5,6 +5,7 @@ const useAssetItems = () => {
   return useQuery<AssetItems[], Error>({
     queryKey: ["assetItems"],
     queryFn: () => assetItemsService.getAll(),
+    staleTime: 5 * 60 * 1000, // stale time for 5 mins
   });
 };
 

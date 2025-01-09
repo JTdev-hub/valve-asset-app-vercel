@@ -6,6 +6,7 @@ const useCustomers = (id?: number) => {
   return useQuery<Customer[], Error>({
     queryKey: CUSTOMERS_CACHE_KEY,
     queryFn: () => customerService.getAll(id),
+    staleTime: 5 * 60 * 1000, //stale time for 5 mins
   });
 };
 export default useCustomers;

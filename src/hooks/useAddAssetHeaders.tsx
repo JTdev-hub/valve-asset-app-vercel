@@ -4,8 +4,9 @@ import assetHeaderService, {
   AssetHeader,
 } from "../services/assetHeader-service";
 
-const useAddAssetHeaders = () => {
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+const useAddAssetHeaders = (onAdd: () => void) => {
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
   const mutate = useMutation<AssetHeader, Error, AssetHeader>({
     mutationFn: assetHeaderService.create,
@@ -15,16 +16,23 @@ const useAddAssetHeaders = () => {
         (assetHeader) => [savedAssetHeader, ...(assetHeader || [])]
       );
 
-      setAlertMessage(
-        `Asset Header "${savedAssetHeader.assetNumber}" has been created successfully!`
+      setShowAlert(true);
+      setMessage(
+        `Asset Header ${savedAssetHeader.assetNumber} has been successfully created!`
       );
 
       // Clear alert after 3 seconds
-      setTimeout(() => setAlertMessage(null), 3000);
+      onAdd();
+    },
+    onError: (error, savedAssetHeader) => {
+      setShowAlert(true);
+      setMessage(
+        `Encountered errors while saving asset header ${savedAssetHeader.assetNumber}! (${error.message})`
+      );
     },
   });
 
-  return { ...mutate, alertMessage };
+  return { ...mutate, showAlert, message, setShowAlert };
 };
 
 export default useAddAssetHeaders;
