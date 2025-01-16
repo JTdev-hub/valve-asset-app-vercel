@@ -6,4 +6,6 @@ export interface CustomerWithAssets extends Customer {
   assetHeaders: AssetHeader[];
 }
 
-export default new HttpService<CustomerWithAssets>("/customersAssetHeaders");
+export default new HttpService<CustomerWithAssets, CustomerWithAssets>(
+  "/customersAssetHeaders"
+);

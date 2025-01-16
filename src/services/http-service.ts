@@ -6,27 +6,27 @@ const axiosInstance = axios.create({
   baseURL: URL,
 });
 
-interface Entity {
-  id: number;
-}
+// interface Entity {
+//   id: number;
+// }
 
-class HttpService<T> {
+class HttpService<TInput, TOutput> {
   endpoint: string;
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
   }
 
-  getAll = (id?: number) => {
+  getAll = (id?: number): Promise<TOutput[]> => {
     const url = id ? `${this.endpoint}?id=${id}` : this.endpoint;
-    return axiosInstance.get<T[]>(url).then((res) => res.data);
+    return axiosInstance.get<TOutput[]>(url).then((res) => res.data);
   };
 
   delete = (id: number) => {
     return axiosInstance.delete(this.endpoint + "/" + id);
   };
 
-  create = (entity: T) => {
+  create = (entity: TInput): Promise<TOutput> => {
     return axiosInstance
       .post(this.endpoint, entity, {
         maxContentLength: 50 * 1024 * 1024,
@@ -34,8 +34,12 @@ class HttpService<T> {
       .then((res) => res.data);
   };
 
-  update = <T extends Entity>(entity: T) => {
-    return axiosInstance.patch(this.endpoint + "/" + entity.id, entity);
+  update = (id: number, body: string) => {
+    return axiosInstance
+      .patch(this.endpoint + "?id=" + id, body, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((res) => res.data);
   };
 }
 

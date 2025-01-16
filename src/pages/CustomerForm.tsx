@@ -64,7 +64,7 @@ const CustomerForm = () => {
           <CardForms>
             <Stack spacing={3}>
               <VStack align="start">
-                <Text>Customer Name</Text>
+                <Text fontWeight="bold">Customer Name</Text>
                 <Input
                   {...register("customerName")}
                   placeholder="e.g John"
@@ -76,7 +76,7 @@ const CustomerForm = () => {
                 )}
               </VStack>
               <VStack align="start">
-                <Text>Customer Site</Text>
+                <Text fontWeight="bold">Customer Site</Text>
                 <Input
                   {...register("customerSite")}
                   placeholder="e.g Site 001"
@@ -88,7 +88,7 @@ const CustomerForm = () => {
                 )}
               </VStack>
               <VStack align="start">
-                <Text>Customer Contact</Text>
+                <Text fontWeight="bold">Customer Contact</Text>
                 <Input
                   {...register("customerContact")}
                   placeholder="e.g +639171234567"

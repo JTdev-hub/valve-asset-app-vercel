@@ -10,12 +10,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import useCustomerAssetsHeader from "../hooks/useCustomerWithAssetHeaders";
+
 import CardForms from "../components/CardForms";
 import SkeletonLoading from "../components/SkeletonLoading";
+import useAssetHeaders from "../hooks/useAssetHeaders";
 
 const AssetHeadersDetails = () => {
-  const { data: assetHeaders, isLoading } = useCustomerAssetsHeader();
+  const { data: assetHeaders, isLoading } = useAssetHeaders();
 
   if (isLoading)
     return (
@@ -45,18 +46,20 @@ const AssetHeadersDetails = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {assetHeaders?.map((assetHeader) =>
-                assetHeader.assetHeaders.map((headerDetails) => (
-                  <Tr key={headerDetails.id}>
-                    <Td textAlign="center">{assetHeader.customerName}</Td>
-                    <Td textAlign="center">{assetHeader.customerSite}</Td>
-                    <Td textAlign="center">{headerDetails.assetNumber}</Td>
-                    <Td textAlign="center">{headerDetails.assetSerialNo}</Td>
-                    <Td textAlign="center">{headerDetails.assetDescription}</Td>
-                    <Td textAlign="center">{headerDetails.siteSection}</Td>
-                  </Tr>
-                ))
-              )}
+              {assetHeaders?.map((assetHeader) => (
+                <Tr key={assetHeader.id}>
+                  <Td textAlign="center">
+                    {assetHeader.customer?.customerName}
+                  </Td>
+                  <Td textAlign="center">
+                    {assetHeader.customer?.customerSite}
+                  </Td>
+                  <Td textAlign="center">{assetHeader.assetNumber}</Td>
+                  <Td textAlign="center">{assetHeader.assetSerialNo}</Td>
+                  <Td textAlign="center">{assetHeader.assetDescription}</Td>
+                  <Td textAlign="center">{assetHeader.siteSection}</Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
         </TableContainer>

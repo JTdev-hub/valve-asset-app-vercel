@@ -10,7 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
+interface Props {
+  navItem: NavItem;
+  onSelect: () => void;
+}
+
+const DesktopSubNav = ({ navItem, onSelect }: Props) => {
   return (
     <Box
       //as="a"
@@ -20,7 +25,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
       rounded={"md"}
       _hover={{ bg: useColorModeValue("green.50", "gray.900") }}
     >
-      <Link to={href || ""}>
+      <Link to={navItem.href || ""} onClick={onSelect}>
         <Stack direction={"row"} align={"center"}>
           <Box>
             <Text
@@ -28,9 +33,9 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
               _groupHover={{ color: "green.400" }}
               fontWeight={500}
             >
-              {label}
+              {navItem.label}
             </Text>
-            <Text fontSize={"sm"}>{subLabel}</Text>
+            <Text fontSize={"sm"}>{navItem.subLabel}</Text>
           </Box>
           <Flex
             transition={"all .3s ease"}

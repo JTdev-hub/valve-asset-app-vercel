@@ -1,3 +1,4 @@
+import { Customer } from "./customer-service.js";
 import HttpService from "./http-service.js";
 
 export interface AssetHeader {
@@ -7,6 +8,7 @@ export interface AssetHeader {
   assetDescription: string;
   assetSerialNo: string;
   siteSection: string;
+  customer?: Customer;
 }
 
-export default new HttpService<AssetHeader>("/assetHeaders");
+export default new HttpService<AssetHeader, AssetHeader>("/assetHeaders");

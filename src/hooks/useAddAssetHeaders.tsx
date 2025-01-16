@@ -3,6 +3,7 @@ import { useState } from "react";
 import assetHeaderService, {
   AssetHeader,
 } from "../services/assetHeader-service";
+import { ASSETHEADERS_CACHE_KEY } from "../constants/cache-constants";
 
 const useAddAssetHeaders = (onAdd: () => void) => {
   const [showAlert, setShowAlert] = useState(false);
@@ -11,8 +12,9 @@ const useAddAssetHeaders = (onAdd: () => void) => {
   const mutate = useMutation<AssetHeader, Error, AssetHeader>({
     mutationFn: assetHeaderService.create,
     onSuccess: (savedAssetHeader) => {
+      //TODO: Logic is to add the assetHeader response to the assetHeader object inside customerWithAssetHeaders
       queryClient.setQueryData<AssetHeader[]>(
-        ["assetHeader"],
+        ASSETHEADERS_CACHE_KEY,
         (assetHeader) => [savedAssetHeader, ...(assetHeader || [])]
       );
 

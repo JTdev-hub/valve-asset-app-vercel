@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import customerService, { Customer } from "../services/customer-service";
 import { useState } from "react";
-import { CUSTOMER_CACHE_KEY } from "../constants/cache-constants";
+import { CUSTOMERS_CACHE_KEY } from "../constants/cache-constants";
 
 const useAddUsers = (onAdd: () => void) => {
   const [showAlert, setShowAlert] = useState(false);
@@ -9,11 +9,24 @@ const useAddUsers = (onAdd: () => void) => {
   const queryClient = useQueryClient();
   const mutate = useMutation<Customer, Error, Customer>({
     mutationFn: customerService.create,
+    // onMutate: (newCustomer: Customer) => {
+    //   queryClient.setQueryData<Customer[]>(
+    //     CUSTOMERS_CACHE_KEY,
+    //     (customers = []) => [newCustomer, ...customers]
+    //   );
+    // },
     onSuccess: (savedCustomer) => {
-      queryClient.setQueryData<Customer[]>(CUSTOMER_CACHE_KEY, (customer) => [
-        savedCustomer,
-        ...(customer || []),
-      ]);
+      // queryClient.setQueryData<Customer[]>(CUSTOMERS_CACHE_KEY, (customers) =>
+      //   customers?.map((customer) =>
+      //     customer.id === newCustomer.id ? savedCustomer : customer
+      //   )
+      // );
+
+      //Update cache with reply from server
+      queryClient.setQueryData<Customer[]>(
+        CUSTOMERS_CACHE_KEY,
+        (customers = []) => [...customers, savedCustomer]
+      );
 
       setShowAlert(true);
       setMessage(

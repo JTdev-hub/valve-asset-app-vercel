@@ -67,27 +67,12 @@ const AssetItemsForm = () => {
     setValue,
     // formState: { errors },
   } = useForm<AssetItemsFormData>({ resolver: zodResolver(schema) });
-
-  const {
-    mutate: addAssetItems,
-    isSuccess,
-    showAlert,
-    isPending,
-    message,
-    setShowAlert,
-  } = useAddAssetItems(() => {
-    //Reset fields on success
-    reset();
-    setSelectedImage(null);
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
-  });
+  const formData = new FormData();
 
   const { data: assetHeaders } = useAssetHeaders();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [formDataImage, setFormDataImage] = useState<FormData>();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -95,28 +80,45 @@ const AssetItemsForm = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
-        setValue("images", reader.result as string);
-        console.log(selectedImage);
+        setValue("images", "");
+        formData.append("file", reader.result as string);
+        formData.append("upload_preset", "unsigned");
+        formData.append("api_key", import.meta.env.VITE_CLOUDINARY_APIKEY);
+        setFormDataImage(formData);
       };
       reader.readAsDataURL(file);
-
-      // formData.append("file", image);
-      // formData.append("upload_preset", "unsigned");
-      // formData.append("api_key", import.meta.env.VITE_CLOUDINARY_APIKEY);
-
-      // cloudinaryService.create(formData);
     }
   };
+
+  const {
+    mutate: addAssetItems,
+    isSuccess,
+    assetItemForm,
+    setAssetItemForm,
+    isPending,
+  } = useAddAssetItems(() => {
+    //Reset fields on success
+    reset();
+    setSelectedImage(null);
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      setAssetItemForm({
+        showAlert: false,
+      });
+    }, 3000);
+  }, formDataImage as FormData);
 
   return (
     <>
       {/* Display alert when success or when error */}
-      {showAlert && (
+      {assetItemForm.showAlert && (
         <AlertBanner
-          message={message}
+          message={assetItemForm.message || ""}
           isSuccess={isSuccess}
           onClose={() => {
-            setShowAlert(false);
+            setAssetItemForm({
+              showAlert: false,
+            });
           }}
         />
       )}

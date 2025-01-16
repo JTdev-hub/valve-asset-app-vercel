@@ -7,4 +7,4 @@ export interface Customer {
   customerContact: string;
 }
 
-export default new HttpService<Customer>("/customers");
+export default new HttpService<Customer, Customer>("/customers");

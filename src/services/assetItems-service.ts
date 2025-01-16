@@ -18,4 +18,4 @@ export interface AssetItems {
   images: string;
 }
 
-export default new HttpService<AssetItems>("/assetItems");
+export default new HttpService<AssetItems, AssetItems>("/assetItems");

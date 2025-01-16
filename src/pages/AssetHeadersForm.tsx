@@ -87,7 +87,7 @@ const AssetHeadersForm = () => {
             <Stack spacing={3}>
               <HStack>
                 <VStack align="start">
-                  <Text>Customer ID</Text>
+                  <Text fontWeight="bold">Customer ID</Text>
                   <Select
                     {...register("customerId", { valueAsNumber: true })}
                     placeholder="Customer ID"
@@ -100,7 +100,7 @@ const AssetHeadersForm = () => {
                   </Select>
                 </VStack>
                 <VStack align="start">
-                  <Text>Asset Number</Text>
+                  <Text fontWeight="bold">Asset Number</Text>
                   <Input
                     {...register("assetNumber")}
                     placeholder="e.g Asset 001"
@@ -113,7 +113,7 @@ const AssetHeadersForm = () => {
                 </VStack>
               </HStack>
               <VStack align="start">
-                <Text>Asset Description</Text>
+                <Text fontWeight="bold">Asset Description</Text>
                 <Input
                   {...register("assetDescription")}
                   placeholder="e.g Valve for Hose 001"
@@ -125,7 +125,7 @@ const AssetHeadersForm = () => {
                 )}
               </VStack>
               <VStack align="start">
-                <Text>Asset Serial Number</Text>
+                <Text fontWeight="bold">Asset Serial Number</Text>
                 <Input
                   {...register("assetSerialNo")}
                   placeholder="e.g ASNO001"
@@ -137,7 +137,7 @@ const AssetHeadersForm = () => {
                 )}
               </VStack>
               <VStack align="start">
-                <Text>Site Section</Text>
+                <Text fontWeight="bold">Site Section</Text>
                 <Input
                   {...register("siteSection")}
                   placeholder="Site Section"

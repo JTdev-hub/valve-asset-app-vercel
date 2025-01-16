@@ -12,25 +12,32 @@ import { useState } from "react";
 
 const DesktopNav = () => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [openPopover, setOpenPopover] = useState<string | null>(null);
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
   const selectedColor = useColorModeValue("green.600", "blue.300");
 
-  const handleClick = (label: string) => {
-    setSelectedItem(label);
-  };
   return (
     <Stack direction={"row"} spacing={4}>
       {NAV_ITEMS.map((navItem) => (
         <Box key={navItem.label}>
-          <Popover trigger={"hover"} placement={"bottom-start"}>
+          <Popover
+            trigger={"hover"}
+            placement={"bottom-start"}
+            isOpen={openPopover === navItem.label}
+            onOpen={() => {
+              setOpenPopover(navItem.label);
+              setSelectedItem(navItem.label);
+            }}
+            onClose={() => setOpenPopover(null)}
+          >
             <PopoverTrigger>
               <Box
                 as="a"
                 p={2}
                 fontSize={"sm"}
-                fontWeight={500}
+                fontWeight={selectedItem === navItem.label ? "bold" : 500}
                 color={
                   selectedItem === navItem.label ? selectedColor : linkColor
                 }
@@ -38,7 +45,6 @@ const DesktopNav = () => {
                   textDecoration: "none",
                   color: linkHoverColor,
                 }}
-                onClick={() => handleClick(navItem.label)} // Set the selected item
               >
                 {navItem.label}
               </Box>
@@ -55,7 +61,11 @@ const DesktopNav = () => {
               >
                 <Stack>
                   {navItem.children.map((child) => (
-                    <DesktopSubNav key={child.label} {...child} />
+                    <DesktopSubNav
+                      key={child.label}
+                      navItem={child}
+                      onSelect={() => setOpenPopover(null)}
+                    />
                   ))}
                 </Stack>
               </PopoverContent>

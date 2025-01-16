@@ -6,4 +6,6 @@ export interface AssetItemsWithHeaders extends AssetItems {
   assetHeader: AssetHeader;
 }
 
-export default new HttpService<AssetItemsWithHeaders>("/assetItemsWithHeader");
+export default new HttpService<AssetItemsWithHeaders, AssetItemsWithHeaders>(
+  "/assetItemsWithHeader"
+);

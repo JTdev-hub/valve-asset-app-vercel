@@ -8,7 +8,6 @@ import AssetHeadersForm from "../pages/AssetHeadersForm";
 import AssetItemsForm from "../pages/AssetItemsForm";
 import AssetItemTables from "../pages/AssetItemTables";
 import AssetItemDetails from "../pages/AssetItemDetails";
-import PhotoUpload from "../pages/PhotoUpload";
 
 //   const { mutate: addCustomers } = useAddUsers();
 //   const { mutate: addAssetHeaders } = useAddAssetHeaders();
@@ -33,7 +32,7 @@ const routes = createBrowserRouter([
         path: "/viewAssetItem/:id",
         element: <AssetItemDetails />,
       },
-      { path: "/uploadPhotos", element: <PhotoUpload /> },
+      //{ path: "/uploadPhotos", element: <PhotoUpload /> },
     ],
   },
 ]);
