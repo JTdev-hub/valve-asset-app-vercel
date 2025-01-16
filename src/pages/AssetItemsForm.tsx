@@ -28,6 +28,14 @@ import { useState } from "react";
 import useAddAssetItems from "../hooks/useAddAssetItems";
 import AlertBanner from "../components/AlertBanner";
 
+interface Images {
+  image: string;
+}
+
+export interface FormDataPayload {
+  formDataString: FormData;
+}
+
 const schema = z.object({
   assetHeaderId: z.number(),
   duty: z.string().min(1, { message: "Duty must be selected" }),
@@ -67,27 +75,44 @@ const AssetItemsForm = () => {
     setValue,
     // formState: { errors },
   } = useForm<AssetItemsFormData>({ resolver: zodResolver(schema) });
-  const formData = new FormData();
 
   const { data: assetHeaders } = useAssetHeaders();
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [formDataImage, setFormDataImage] = useState<FormData>();
+  const [selectedImage, setSelectedImage] = useState<Images[]>([]);
+  const [formDataImage, setFormDataImage] = useState<FormDataPayload[]>([]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-        setValue("images", "");
-        formData.append("file", reader.result as string);
-        formData.append("upload_preset", "unsigned");
-        formData.append("api_key", import.meta.env.VITE_CLOUDINARY_APIKEY);
-        setFormDataImage(formData);
-      };
-      reader.readAsDataURL(file);
-    }
+    const files = e.target.files;
+    console.log(files);
+    //const newImages: Images[] = [];
+
+    if (files)
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onloadend = () => {
+            //newImages.push({ image: reader.result as string });
+            setValue("images", "");
+            setSelectedImage((prevImages) => [
+              ...prevImages,
+              { image: reader.result as string },
+            ]);
+
+            const formData = new FormData();
+
+            formData.append("file", reader.result as string);
+            formData.append("upload_preset", "unsigned");
+            formData.append("api_key", import.meta.env.VITE_CLOUDINARY_APIKEY);
+
+            setFormDataImage((previousFormData) => [
+              ...previousFormData,
+              { formDataString: formData },
+            ]);
+          };
+        }
+      }
   };
 
   const {
@@ -99,14 +124,14 @@ const AssetItemsForm = () => {
   } = useAddAssetItems(() => {
     //Reset fields on success
     reset();
-    setSelectedImage(null);
+    setSelectedImage([{ image: "" }]);
     // Hide success message after 5 seconds
     setTimeout(() => {
       setAssetItemForm({
         showAlert: false,
       });
     }, 3000);
-  }, formDataImage as FormData);
+  }, formDataImage as FormDataPayload[]);
 
   return (
     <>
@@ -285,15 +310,19 @@ const AssetItemsForm = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
+                  multiple
                 />
                 {selectedImage && (
                   <Box mt={2}>
                     <Text>Selected Image:</Text>
-                    <img
-                      src={selectedImage}
-                      alt="Selected"
-                      style={{ maxWidth: "100%" }}
-                    />
+                    {selectedImage.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image.image}
+                        alt="Selected"
+                        style={{ maxWidth: "100%" }}
+                      />
+                    ))}
                   </Box>
                 )}
               </VStack>

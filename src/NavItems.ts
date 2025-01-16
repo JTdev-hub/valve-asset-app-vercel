@@ -51,16 +51,16 @@ const NAV_ITEMS: Array<NavItem> = [
       },
     ],
   },
-  {
-    label: "Photo (TEST)",
-    children: [
-      {
-        label: "Photo Upload",
-        subLabel: "Upload Photos",
-        href: "/uploadPhotos",
-      },
-    ],
-  },
+  // {
+  //   label: "Photo (TEST)",
+  //   children: [
+  //     {
+  //       label: "Photo Upload",
+  //       subLabel: "Upload Photos",
+  //       href: "/uploadPhotos",
+  //     },
+  //   ],
+  // },
 ];
 
 export default NAV_ITEMS;

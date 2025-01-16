@@ -6,6 +6,7 @@ import { ASSETITEMS_CACHE_KEY } from "../constants/cache-constants";
 import useAddPhotos from "./useAddPhotos";
 
 import useUpdateAssetItem from "./useUpdateAssetItem";
+import { FormDataPayload } from "../pages/AssetItemsForm";
 
 interface AssetItemForm {
   showAlert?: boolean;
@@ -13,7 +14,10 @@ interface AssetItemForm {
   assetItemId?: number | null;
 }
 
-const useAddAssetItems = (onAdd: () => void, imageString: FormData) => {
+const useAddAssetItems = (
+  onAdd: () => void,
+  imageString: FormDataPayload[]
+) => {
   const { mutateAsync: addPhoto } = useAddPhotos();
   const { mutateAsync: updateAssetItem } = useUpdateAssetItem();
 
@@ -32,12 +36,21 @@ const useAddAssetItems = (onAdd: () => void, imageString: FormData) => {
           (assetItem = []) => [...assetItem, savedAssetItem]
         );
 
-        const photoResult = await addPhoto(imageString);
+        console.log(imageString);
 
+        const uploadPhotoPromise = imageString.map(async (image) => {
+          const photoResult = await addPhoto(image.formDataString);
+          return photoResult.secure_url;
+        });
+
+        // Wait for all uploads to complete and get the secure URLs
+        const photoUrls = await Promise.all(uploadPhotoPromise);
+
+        const photoUrlList = photoUrls.map((photoUrl) => photoUrl).join(";");
         //TODO: Fix the secureURL
         updateAssetItem({
           id: savedAssetItem.id as number,
-          body: photoResult.secure_url as string,
+          body: photoUrlList as string,
         });
 
         setAssetItemForm({

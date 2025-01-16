@@ -73,7 +73,9 @@ const AssetItemDetails = () => {
               <Text>{assetItemDetails.generalNotes}</Text>
             </HStack>
             <Text fontWeight="bold">Image/s: </Text>
-            <Image src={assetItemDetails.images}></Image>
+            {assetItemDetails.images.split(";").map((image, index) => (
+              <Image src={image} key={index}></Image>
+            ))}
           </Stack>
         ))}
       </CardForms>
