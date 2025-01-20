@@ -23,7 +23,7 @@ import {
   actuationType,
   flangeConnection,
   instrumentation,
-} from "../AssetFormItems";
+} from "../constants/AssetFormItems";
 import { useState } from "react";
 import useAddAssetItems from "../hooks/useAddAssetItems";
 import AlertBanner from "../components/AlertBanner";
