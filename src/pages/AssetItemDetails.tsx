@@ -4,6 +4,7 @@ import { Text, Image, HStack, Stack, Flex } from "@chakra-ui/react";
 import CardForms from "../components/CardForms";
 import useAssetItemDetails from "../hooks/useAssetItemDetails";
 import SkeletonLoading from "../components/SkeletonLoading";
+import getCroppedImageUrl from "../image-url";
 
 const AssetItemDetails = () => {
   const { id } = useParams();
@@ -74,7 +75,7 @@ const AssetItemDetails = () => {
             </HStack>
             <Text fontWeight="bold">Image/s: </Text>
             {assetItemDetails.images.split(";").map((image, index) => (
-              <Image src={image} key={index}></Image>
+              <Image src={getCroppedImageUrl(image)} key={index}></Image>
             ))}
           </Stack>
         ))}
