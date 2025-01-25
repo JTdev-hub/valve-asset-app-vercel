@@ -5,9 +5,13 @@ import SkeletonLoading from "../components/SkeletonLoading";
 import useAssetHeaders from "../hooks/useAssetHeaders";
 import DataTable from "../components/DataTable";
 import { assetHeaderColumns } from "../components/TableDefinitions";
+import { useState } from "react";
 
 const AssetHeadersDetails = () => {
-  const { data: assetHeaders, isLoading } = useAssetHeaders();
+  const [assetHeaderQuery, setAssetHeaderQuery] = useState<string>("");
+  const { data: assetHeaders, isLoading } = useAssetHeaders(
+    assetHeaderQuery ? assetHeaderQuery : undefined
+  );
 
   if (isLoading)
     return (
@@ -28,6 +32,7 @@ const AssetHeadersDetails = () => {
           link: `/viewAssetItem/${item.id}`,
         })) ?? []
       }
+      onSearch={(assetHeaderQuery) => setAssetHeaderQuery(assetHeaderQuery)}
     ></DataTable>
   );
 };

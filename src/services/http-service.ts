@@ -17,8 +17,20 @@ class HttpService<TInput, TOutput> {
     this.endpoint = endpoint;
   }
 
-  getAll = (id?: number): Promise<TOutput[]> => {
-    const url = id ? `${this.endpoint}?id=${id}` : this.endpoint;
+  getAll = (id?: number, dataQuery?: string): Promise<TOutput[]> => {
+    // Create an object with query parameters
+    const queryParams = { id, dataQuery };
+
+    const params = new URLSearchParams(
+      Object.entries(queryParams)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)])
+    );
+
+    const url = params.toString()
+      ? `${this.endpoint}?${params.toString()}`
+      : this.endpoint;
+
     return axiosInstance.get<TOutput[]>(url).then((res) => res.data);
   };
 

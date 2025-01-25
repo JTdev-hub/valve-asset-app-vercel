@@ -4,10 +4,12 @@ import assetHeaderService, {
 } from "../services/assetHeader-service";
 import { useQuery } from "@tanstack/react-query";
 
-const useAssetHeaders = () => {
+const useAssetHeaders = (assetHeaderQuery?: string) => {
   return useQuery<AssetHeader[], Error>({
-    queryKey: ASSETHEADERS_CACHE_KEY,
-    queryFn: () => assetHeaderService.getAll(),
+    queryKey: assetHeaderQuery
+      ? ["assetHeader", assetHeaderQuery]
+      : ASSETHEADERS_CACHE_KEY,
+    queryFn: () => assetHeaderService.getAll(undefined, assetHeaderQuery),
     staleTime: 5 * 60 * 1000, //Cache time set to 5 min
   });
 };

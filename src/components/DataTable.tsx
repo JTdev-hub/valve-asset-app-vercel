@@ -11,39 +11,38 @@ import {
   Td,
   Icon,
 } from "@chakra-ui/react";
-import React from "react";
 
 import { Link } from "react-router-dom";
 import CardForms from "./CardForms";
 import { Column } from "./TableDefinitions";
+import { Customer } from "../services/customer-service";
+import { AssetHeader } from "../services/assetHeader-service";
+import { AssetItems } from "../services/assetItems-service";
+import SearchInput from "./SearchInput";
 
 interface Items {
   id?: number;
-  [key: string]: unknown;
+  [key: string]:
+    | Customer
+    | AssetHeader
+    | AssetItems
+    | string
+    | number
+    | undefined;
 }
 
 interface Props {
   caption: string;
   columns: Column[];
   data: Items[];
+  onSearch: (searchText: string) => void;
 }
 
-const isReactNode = (value: unknown): value is React.ReactNode => {
-  return (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean" ||
-    React.isValidElement(value) ||
-    (Array.isArray(value) && value.every(isReactNode))
-  );
-};
-const DataTable = ({ caption, columns, data }: Props) => {
-  {
-    console.log(data.map((row) => row.id));
-  }
+const DataTable = ({ caption, columns, data, onSearch }: Props) => {
   return (
     <Box overflowX="auto">
       <CardForms>
+        <SearchInput onSearch={onSearch} searchObject={caption}></SearchInput>
         <TableContainer>
           <Table variant="simple" size={{ base: "sm", lg: "lg" }}>
             <TableCaption placement="top">{caption}</TableCaption>
@@ -62,18 +61,12 @@ const DataTable = ({ caption, columns, data }: Props) => {
                   {columns.map((column) => (
                     <Td key={column.accessor} textAlign="left">
                       {column.accessor === "link" ? (
-                        <Link
-                          to={
-                            isReactNode(row[column.accessor])
-                              ? (row[column.accessor] as string)
-                              : ""
-                          }
-                        >
+                        <Link to={row[column.accessor] as string}>
                           <Icon as={ChevronRightIcon} />
                         </Link>
-                      ) : isReactNode(row[column.accessor]) ? (
+                      ) : (
                         (row[column.accessor] as string)
-                      ) : null}
+                      )}
                     </Td>
                   ))}
                 </Tr>

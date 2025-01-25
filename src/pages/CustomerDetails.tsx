@@ -4,9 +4,14 @@ import CardForms from "../components/CardForms";
 import SkeletonLoading from "../components/SkeletonLoading";
 import DataTable from "../components/DataTable";
 import { customerColumns } from "../components/TableDefinitions";
+import { useState } from "react";
 
 const CustomerDetails = () => {
-  const { data: customers, isLoading } = useCustomers();
+  const [customerQuery, setCustomerQuery] = useState<string>("");
+  const { data: customers, isLoading } = useCustomers(
+    undefined,
+    customerQuery ? customerQuery : undefined
+  );
 
   if (isLoading)
     return (
@@ -27,6 +32,7 @@ const CustomerDetails = () => {
           link: `/viewAssetItem/${item.id}`,
         })) ?? []
       }
+      onSearch={(customerQuery) => setCustomerQuery(customerQuery)}
     ></DataTable>
   );
 };

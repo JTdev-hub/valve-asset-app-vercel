@@ -4,10 +4,12 @@ import assetItemsWithHeaderService, {
 } from "../services/assetItemsWithHeader-service";
 import { ASSET_ITEMS_WITH_HEADERS_CACHE_KEY } from "../constants/cache-constants";
 
-const useAssetItemsWithHeaders = (id?: number) => {
+const useAssetItemsWithHeaders = (id?: number, assetItemsQuery?: string) => {
   return useQuery<AssetItemsWithHeaders[], Error>({
-    queryKey: ASSET_ITEMS_WITH_HEADERS_CACHE_KEY,
-    queryFn: () => assetItemsWithHeaderService.getAll(id),
+    queryKey: assetItemsQuery
+      ? ["assetItemWithHeader", assetItemsQuery]
+      : ASSET_ITEMS_WITH_HEADERS_CACHE_KEY,
+    queryFn: () => assetItemsWithHeaderService.getAll(id, assetItemsQuery),
   });
 };
 
