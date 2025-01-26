@@ -89,7 +89,7 @@ const AssetHeadersForm = () => {
           <CardForms>
             <Stack spacing={3}>
               <HStack>
-                <VStack align="start">
+                <VStack align="start" flex="1">
                   <Text fontWeight="bold">Customer ID</Text>
                   <Select
                     {...register("customerId", { valueAsNumber: true })}
@@ -102,7 +102,7 @@ const AssetHeadersForm = () => {
                     ))}
                   </Select>
                 </VStack>
-                <VStack align="start">
+                <VStack align="start" flex="3">
                   <Text fontWeight="bold">Asset Number</Text>
                   <Input
                     {...register("assetNumber")}

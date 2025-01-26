@@ -30,7 +30,7 @@ const CustomerForm = () => {
   } = useForm<CustomerFormData>({ resolver: zodResolver(schema) });
 
   const {
-    mutate: addCustomers,
+    mutateAsync: addCustomers,
     isSuccess,
     showAlert,
     message,
@@ -59,8 +59,11 @@ const CustomerForm = () => {
 
       {isPending && <Loading></Loading>}
       <form
-        onSubmit={handleSubmit((data) => {
-          addCustomers([data]);
+        onSubmit={handleSubmit(async (data) => {
+          await addCustomers([data]);
+          if (isSuccess || !isSuccess) {
+            window.scrollTo({ top: 0, behavior: "auto" });
+          }
         })}
       >
         <Flex justifyContent="center">

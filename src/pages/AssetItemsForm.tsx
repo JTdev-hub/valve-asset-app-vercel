@@ -82,42 +82,56 @@ const AssetItemsForm = () => {
   const [selectedImage, setSelectedImage] = useState<Images[]>([]);
   const [formDataImage, setFormDataImage] = useState<FormDataPayload[]>([]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    const reader = new FileReader();
-    console.log(files);
-    //const newImages: Images[] = [];
 
-    if (files)
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file && file.type.startsWith("image/")) {
-          reader.readAsDataURL(file);
-          reader.onloadend = () => {
-            //newImages.push({ image: reader.result as string });
-            setValue("images", "");
-            setSelectedImage((prevImages) => [
-              ...prevImages,
-              { image: reader.result as string },
-            ]);
+    if (!files) return;
 
-            const formData = new FormData();
+    const newImages: Images[] = [];
+    const newFormData: FormDataPayload[] = [];
 
-            formData.append("file", reader.result as string);
-            formData.append("upload_preset", "unsigned");
-            formData.append("api_key", import.meta.env.VITE_CLOUDINARY_APIKEY);
+    const readFile = (
+      file: File
+    ): Promise<{ image: string; formDataString: FormData }> => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("upload_preset", "unsigned");
+          formData.append("api_key", import.meta.env.VITE_CLOUDINARY_APIKEY);
 
-            setFormDataImage((previousFormData) => [
-              ...previousFormData,
-              { formDataString: formData },
-            ]);
-          };
-        }
-      }
+          resolve({
+            image: reader.result as string,
+            formDataString: formData,
+          });
+        };
+        reader.onerror = () => reject(reader.error);
+      });
+    };
+
+    try {
+      const results = await Promise.all(Array.from(files).map(readFile));
+
+      results.forEach(({ image, formDataString }) => {
+        newImages.push({ image });
+        newFormData.push({ formDataString });
+      });
+
+      setValue("images", "");
+      setSelectedImage((prevImages) => [...prevImages, ...newImages]);
+      setFormDataImage((previousFormData) => [
+        ...previousFormData,
+        ...newFormData,
+      ]);
+    } catch (error) {
+      console.error("Error reading files:", error);
+    }
   };
 
   const {
-    mutate: addAssetItems,
+    mutateAsync: addAssetItems,
     isSuccess,
     assetItemForm,
     setAssetItemForm,
@@ -151,8 +165,12 @@ const AssetItemsForm = () => {
 
       {isPending && <Loading></Loading>}
       <form
-        onSubmit={handleSubmit((data) => {
-          addAssetItems(data);
+        onSubmit={handleSubmit(async (data) => {
+          await addAssetItems(data);
+
+          if (isSuccess || !isSuccess) {
+            window.scrollTo({ top: 0, behavior: "auto" });
+          }
         })}
       >
         <Flex justifyContent="center">

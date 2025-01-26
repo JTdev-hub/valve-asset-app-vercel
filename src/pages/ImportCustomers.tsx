@@ -14,7 +14,7 @@ const ImportCustomers = () => {
   //const { data: customers } = useCustomers();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const {
-    mutate: addCustomers,
+    mutateAsync: addCustomers,
     isSuccess,
     showAlert,
     message,
@@ -29,8 +29,12 @@ const ImportCustomers = () => {
   });
   const [excelData, setExcelData] = useState<Customer[]>([]);
 
-  const handleSubmit = () => {
-    addCustomers(excelData);
+  const handleSubmit = async () => {
+    await addCustomers(excelData);
+
+    if (isSuccess || !isSuccess) {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
   };
 
   const handleSelectFiles = () => {
@@ -84,6 +88,7 @@ const ImportCustomers = () => {
       )}
 
       {isPending && <Loading></Loading>}
+
       <Box overflowX="auto">
         <CardForms>
           {isCustomerData(excelData) && excelData.length > 0 ? (
