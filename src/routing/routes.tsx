@@ -9,6 +9,7 @@ import AssetItemsForm from "../pages/AssetItemsForm";
 import AssetItemTables from "../pages/AssetItemTables";
 import AssetItemDetails from "../pages/AssetItemDetails";
 import PhotoUpload from "../pages/PhotoUpload";
+import ImportCustomers from "../pages/ImportCustomers";
 
 //   const { mutate: addCustomers } = useAddUsers();
 //   const { mutate: addAssetHeaders } = useAddAssetHeaders();
@@ -23,6 +24,7 @@ const routes = createBrowserRouter([
       //Customers
       { path: "/createCustomer", element: <CustomerForm /> },
       { path: "/viewCustomers", element: <CustomerDetails /> },
+      { path: "/importCustomers", element: <ImportCustomers /> },
       //Asset Headers
       { path: "/createAssetHeaders", element: <AssetHeadersForm /> },
       { path: "/viewAssetHeaders", element: <AssetHeadersDetails /> },

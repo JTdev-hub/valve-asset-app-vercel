@@ -36,8 +36,6 @@ const useAddAssetItems = (
           (assetItem = []) => [...assetItem, savedAssetItem]
         );
 
-        console.log(imageString);
-
         const uploadPhotoPromise = imageString.map(async (image) => {
           const photoResult = await addPhoto(image.formDataString);
           return photoResult.secure_url;

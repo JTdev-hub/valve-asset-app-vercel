@@ -19,6 +19,11 @@ const NAV_ITEMS: Array<NavItem> = [
         subLabel: "View Existing Customers Information",
         href: "/viewCustomers",
       },
+      {
+        label: "Import Customers",
+        subLabel: "Import Customers from an Excel File",
+        href: "/importCustomers",
+      },
     ],
   },
   {

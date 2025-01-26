@@ -1,6 +1,5 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
-  Box,
   TableContainer,
   Table,
   TableCaption,
@@ -13,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 
 import { Link } from "react-router-dom";
-import CardForms from "./CardForms";
 import { Column } from "./TableDefinitions";
 import { Customer } from "../services/customer-service";
 import { AssetHeader } from "../services/assetHeader-service";
@@ -35,47 +33,50 @@ interface Props {
   caption: string;
   columns: Column[];
   data: Items[];
-  onSearch: (searchText: string) => void;
+  onSearch?: (searchText: string) => void;
 }
 
 const DataTable = ({ caption, columns, data, onSearch }: Props) => {
   return (
-    <Box overflowX="auto">
-      <CardForms>
+    <>
+      {" "}
+      {onSearch ? (
         <SearchInput onSearch={onSearch} searchObject={caption}></SearchInput>
-        <TableContainer>
-          <Table variant="simple" size={{ base: "sm", lg: "lg" }}>
-            <TableCaption placement="top">{caption}</TableCaption>
-            <Thead>
-              <Tr>
+      ) : (
+        ""
+      )}
+      <TableContainer>
+        <Table variant="simple" size={{ base: "sm", lg: "lg" }}>
+          <TableCaption placement="top">{caption}</TableCaption>
+          <Thead>
+            <Tr>
+              {columns.map((column) => (
+                <Th key={column.accessor} textAlign="left">
+                  {column.header}
+                </Th>
+              ))}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {data.map((row) => (
+              <Tr key={row.id}>
                 {columns.map((column) => (
-                  <Th key={column.accessor} textAlign="left">
-                    {column.header}
-                  </Th>
+                  <Td key={column.accessor} textAlign="left">
+                    {column.accessor === "link" ? (
+                      <Link to={row[column.accessor] as string}>
+                        <Icon as={ChevronRightIcon} />
+                      </Link>
+                    ) : (
+                      (row[column.accessor] as string)
+                    )}
+                  </Td>
                 ))}
               </Tr>
-            </Thead>
-            <Tbody>
-              {data.map((row) => (
-                <Tr key={row.id}>
-                  {columns.map((column) => (
-                    <Td key={column.accessor} textAlign="left">
-                      {column.accessor === "link" ? (
-                        <Link to={row[column.accessor] as string}>
-                          <Icon as={ChevronRightIcon} />
-                        </Link>
-                      ) : (
-                        (row[column.accessor] as string)
-                      )}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </CardForms>
-    </Box>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 

@@ -7,8 +7,8 @@ const useAddUsers = (onAdd: () => void) => {
   const [showAlert, setShowAlert] = useState(false);
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
-  const mutate = useMutation<Customer, Error, Customer>({
-    mutationFn: customerService.create,
+  const mutate = useMutation<Customer[], Error, Customer[]>({
+    mutationFn: customerService.createMany,
     // onMutate: (newCustomer: Customer) => {
     //   queryClient.setQueryData<Customer[]>(
     //     CUSTOMERS_CACHE_KEY,
@@ -25,20 +25,34 @@ const useAddUsers = (onAdd: () => void) => {
       //Update cache with reply from server
       queryClient.setQueryData<Customer[]>(
         CUSTOMERS_CACHE_KEY,
-        (customers = []) => [...customers, savedCustomer]
+        (customers = []) => [...customers, ...savedCustomer]
       );
 
       setShowAlert(true);
-      setMessage(
-        `Customer ${savedCustomer.customerName} has been successfully created!`
-      );
+      if (savedCustomer.length == 1) {
+        setMessage(
+          `Customer ${savedCustomer.map(
+            (savedCustomer) => savedCustomer.customerName
+          )} has been successfully created!`
+        );
+      } else {
+        setMessage(`Customer(s) been successfully created!`);
+      }
+
       onAdd();
     },
     onError: (error, savedCustomer) => {
       setShowAlert(true);
-      setMessage(
-        `Encountered errors while saving customer ${savedCustomer.customerName}! (${error.message})`
-      );
+
+      if (savedCustomer.length == 1) {
+        setMessage(
+          `Encountered errors while saving customer  ${savedCustomer.map(
+            (savedCustomer) => savedCustomer.customerName
+          )}! (${error.message})`
+        );
+      } else {
+        setMessage(`Encountered errors while saving customer(s)`);
+      }
     },
   });
 

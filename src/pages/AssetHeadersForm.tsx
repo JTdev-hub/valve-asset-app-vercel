@@ -15,6 +15,7 @@ import useCustomers from "../hooks/useCustomers";
 import CardForms from "../components/CardForms";
 import useAddAssetHeaders from "../hooks/useAddAssetHeaders";
 import AlertBanner from "../components/AlertBanner";
+import Loading from "../components/Loading";
 
 const schema = z.object({
   customerId: z.number(),
@@ -77,6 +78,8 @@ const AssetHeadersForm = () => {
           }}
         />
       )}
+
+      {isPending && <Loading></Loading>}
       <form
         onSubmit={handleSubmit((data) => {
           addAssetHeaders(data);

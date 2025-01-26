@@ -27,6 +27,7 @@ import {
 import { useState } from "react";
 import useAddAssetItems from "../hooks/useAddAssetItems";
 import AlertBanner from "../components/AlertBanner";
+import Loading from "../components/Loading";
 
 interface Images {
   image: string;
@@ -83,6 +84,7 @@ const AssetItemsForm = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+    const reader = new FileReader();
     console.log(files);
     //const newImages: Images[] = [];
 
@@ -90,7 +92,6 @@ const AssetItemsForm = () => {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (file && file.type.startsWith("image/")) {
-          const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onloadend = () => {
             //newImages.push({ image: reader.result as string });
@@ -147,6 +148,8 @@ const AssetItemsForm = () => {
           }}
         />
       )}
+
+      {isPending && <Loading></Loading>}
       <form
         onSubmit={handleSubmit((data) => {
           addAssetItems(data);

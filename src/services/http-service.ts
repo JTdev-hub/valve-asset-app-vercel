@@ -46,6 +46,14 @@ class HttpService<TInput, TOutput> {
       .then((res) => res.data);
   };
 
+  createMany = (entity: TInput[]): Promise<TOutput[]> => {
+    return axiosInstance
+      .post(this.endpoint, entity, {
+        maxContentLength: 50 * 1024 * 1024,
+      })
+      .then((res) => res.data);
+  };
+
   update = (id: number, body: string) => {
     return axiosInstance
       .patch(this.endpoint + "?id=" + id, body, {

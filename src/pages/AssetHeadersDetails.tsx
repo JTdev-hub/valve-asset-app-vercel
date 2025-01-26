@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 import CardForms from "../components/CardForms";
 import SkeletonLoading from "../components/SkeletonLoading";
@@ -23,17 +23,21 @@ const AssetHeadersDetails = () => {
     );
 
   return (
-    <DataTable
-      caption="Asset Headers"
-      columns={assetHeaderColumns}
-      data={
-        assetHeaders?.map((item) => ({
-          ...item,
-          link: `/viewAssetItem/${item.id}`,
-        })) ?? []
-      }
-      onSearch={(assetHeaderQuery) => setAssetHeaderQuery(assetHeaderQuery)}
-    ></DataTable>
+    <Box overflowX="auto">
+      <CardForms>
+        <DataTable
+          caption="Asset Headers"
+          columns={assetHeaderColumns}
+          data={
+            assetHeaders?.map((item) => ({
+              ...item,
+              link: `/viewAssetItem/${item.id}`,
+            })) ?? []
+          }
+          onSearch={(assetHeaderQuery) => setAssetHeaderQuery(assetHeaderQuery)}
+        ></DataTable>
+      </CardForms>
+    </Box>
   );
 };
 

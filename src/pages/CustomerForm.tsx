@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import CardForms from "../components/CardForms";
 import useAddUsers from "../hooks/useAddUsers";
 import AlertBanner from "../components/AlertBanner";
+import Loading from "../components/Loading";
 
 const schema = z.object({
   customerName: z
@@ -55,9 +56,11 @@ const CustomerForm = () => {
           }}
         />
       )}
+
+      {isPending && <Loading></Loading>}
       <form
         onSubmit={handleSubmit((data) => {
-          addCustomers(data);
+          addCustomers([data]);
         })}
       >
         <Flex justifyContent="center">

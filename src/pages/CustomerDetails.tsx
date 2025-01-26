@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import useCustomers from "../hooks/useCustomers";
 import CardForms from "../components/CardForms";
 import SkeletonLoading from "../components/SkeletonLoading";
@@ -23,17 +23,21 @@ const CustomerDetails = () => {
     );
 
   return (
-    <DataTable
-      caption="Customers"
-      columns={customerColumns}
-      data={
-        customers?.map((item) => ({
-          ...item,
-          link: `/viewAssetItem/${item.id}`,
-        })) ?? []
-      }
-      onSearch={(customerQuery) => setCustomerQuery(customerQuery)}
-    ></DataTable>
+    <Box overflowX="auto">
+      <CardForms>
+        <DataTable
+          caption="Customers"
+          columns={customerColumns}
+          data={
+            customers?.map((item) => ({
+              ...item,
+              //link: `/viewAssetItem/${item.id}`,
+            })) ?? []
+          }
+          onSearch={(customerQuery) => setCustomerQuery(customerQuery)}
+        ></DataTable>
+      </CardForms>
+    </Box>
   );
 };
 

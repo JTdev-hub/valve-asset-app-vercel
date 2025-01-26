@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 import useAssetItemWithHeaders from "../hooks/useAssetItemsWithHeaders";
 
@@ -25,18 +25,22 @@ const AssetItemTables = () => {
     );
 
   return (
-    <DataTable
-      caption="Asset Items"
-      columns={assetItemColumns}
-      data={
-        assetItemsWithHeaders?.map((item) => ({
-          ...item.assetHeader,
-          ...item,
-          link: `/viewAssetItem/${item.id}`,
-        })) ?? []
-      }
-      onSearch={(assetItemQuery) => setAssetItemQuery(assetItemQuery)}
-    ></DataTable>
+    <Box overflowX="auto">
+      <CardForms>
+        <DataTable
+          caption="Asset Items"
+          columns={assetItemColumns}
+          data={
+            assetItemsWithHeaders?.map((item) => ({
+              ...item.assetHeader,
+              ...item,
+              link: `/viewAssetItem/${item.id}`,
+            })) ?? []
+          }
+          onSearch={(assetItemQuery) => setAssetItemQuery(assetItemQuery)}
+        ></DataTable>
+      </CardForms>
+    </Box>
   );
 };
 
