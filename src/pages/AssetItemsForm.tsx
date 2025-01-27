@@ -1,14 +1,18 @@
 import {
   Flex,
-  HStack,
+  Grid,
   Input,
   Select,
-  VStack,
   Text,
   Button,
   Box,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Icon,
+  Heading,
 } from "@chakra-ui/react";
-
+import { FaUpload, FaCheckCircle } from "react-icons/fa";
 import CardForms from "../components/CardForms";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -74,17 +78,16 @@ const AssetItemsForm = () => {
     handleSubmit,
     reset,
     setValue,
-    // formState: { errors },
+    formState: { errors },
   } = useForm<AssetItemsFormData>({ resolver: zodResolver(schema) });
 
   const { data: assetHeaders } = useAssetHeaders();
-
   const [selectedImage, setSelectedImage] = useState<Images[]>([]);
   const [formDataImage, setFormDataImage] = useState<FormDataPayload[]>([]);
+  //const toast = useToast();
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-
     if (!files) return;
 
     const newImages: Images[] = [];
@@ -113,7 +116,6 @@ const AssetItemsForm = () => {
 
     try {
       const results = await Promise.all(Array.from(files).map(readFile));
-
       results.forEach(({ image, formDataString }) => {
         newImages.push({ image });
         newFormData.push({ formDataString });
@@ -137,10 +139,8 @@ const AssetItemsForm = () => {
     setAssetItemForm,
     isPending,
   } = useAddAssetItems(() => {
-    //Reset fields on success
     reset();
-    setSelectedImage([{ image: "" }]);
-    // Hide success message after 5 seconds
+    setSelectedImage([]);
     setTimeout(() => {
       setAssetItemForm({
         showAlert: false,
@@ -150,7 +150,6 @@ const AssetItemsForm = () => {
 
   return (
     <>
-      {/* Display alert when success or when error */}
       {assetItemForm.showAlert && (
         <AlertBanner
           message={assetItemForm.message || ""}
@@ -163,200 +162,270 @@ const AssetItemsForm = () => {
         />
       )}
 
-      {isPending && <Loading></Loading>}
+      {isPending && <Loading />}
+
       <form
         onSubmit={handleSubmit(async (data) => {
           await addAssetItems(data);
-
           if (isSuccess || !isSuccess) {
             window.scrollTo({ top: 0, behavior: "auto" });
           }
         })}
       >
-        <Flex justifyContent="center">
+        <Flex justifyContent="center" p={4}>
           <CardForms>
-            {/* First part */}
+            <Heading as="h2" size="lg" textAlign="center" mb={6}>
+              Add Asset Asset Items
+            </Heading>
+            <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+              {/* Asset Number */}
+              <FormControl isInvalid={!!errors.assetHeaderId}>
+                <FormLabel fontWeight="bold">Asset Number</FormLabel>
+                <Select
+                  {...register("assetHeaderId", { valueAsNumber: true })}
+                  placeholder="Select Asset Number"
+                >
+                  {assetHeaders?.map((assetHeader) => (
+                    <option key={assetHeader.id} value={assetHeader.id}>
+                      {assetHeader.id} - {assetHeader.assetNumber}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>
+                  {errors.assetHeaderId?.message}
+                </FormErrorMessage>
+              </FormControl>
 
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Asset Number</Text>
-              <Select
-                {...register("assetHeaderId", { valueAsNumber: true })}
-                placeholder="Asset Number"
+              {/* Duty */}
+              <FormControl isInvalid={!!errors.duty}>
+                <FormLabel fontWeight="bold">Duty</FormLabel>
+                <Select {...register("duty")} placeholder="Select Duty">
+                  {duty?.map((duty) => (
+                    <option key={duty} value={duty}>
+                      {duty}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.duty?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* Specification */}
+              <FormControl isInvalid={!!errors.specification}>
+                <FormLabel fontWeight="bold">Specification</FormLabel>
+                <Select
+                  {...register("specification")}
+                  placeholder="Select Specification"
+                >
+                  {specification?.map((specification) => (
+                    <option key={specification} value={specification}>
+                      {specification}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>
+                  {errors.specification?.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* Valve Type */}
+              <FormControl isInvalid={!!errors.valveType}>
+                <FormLabel fontWeight="bold">Valve Type</FormLabel>
+                <Select
+                  {...register("valveType")}
+                  placeholder="Select Valve Type"
+                >
+                  {valveType?.map((valveType) => (
+                    <option key={valveType} value={valveType}>
+                      {valveType}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.valveType?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* Valve Size */}
+              <FormControl isInvalid={!!errors.valveSize}>
+                <FormLabel fontWeight="bold">Valve Size</FormLabel>
+                <Select
+                  {...register("valveSize")}
+                  placeholder="Select Valve Size"
+                >
+                  {valveSize?.map((valveSize) => (
+                    <option key={valveSize} value={valveSize}>
+                      {valveSize}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.valveSize?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* Model */}
+              <FormControl isInvalid={!!errors.model}>
+                <FormLabel fontWeight="bold">Model</FormLabel>
+                <Input {...register("model")} placeholder="e.g Model 001" />
+                <FormErrorMessage>{errors.model?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* Actuation */}
+              <FormControl isInvalid={!!errors.actuation}>
+                <FormLabel fontWeight="bold">Actuation</FormLabel>
+                <Select
+                  {...register("actuation")}
+                  placeholder="Select Actuation"
+                >
+                  {actuation?.map((actuation) => (
+                    <option key={actuation} value={actuation}>
+                      {actuation}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.actuation?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* Actuation Type */}
+              <FormControl isInvalid={!!errors.actuationType}>
+                <FormLabel fontWeight="bold">Actuation Type</FormLabel>
+                <Select
+                  {...register("actuationType")}
+                  placeholder="Select Actuation Type"
+                >
+                  {actuationType?.map((actuationType) => (
+                    <option key={actuationType} value={actuationType}>
+                      {actuationType}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>
+                  {errors.actuationType?.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* Flange Connection */}
+              <FormControl isInvalid={!!errors.flangeConnection}>
+                <FormLabel fontWeight="bold">Flange Connection</FormLabel>
+                <Select
+                  {...register("flangeConnection")}
+                  placeholder="Select Flange Connection"
+                >
+                  {flangeConnection?.map((flangeConnection) => (
+                    <option key={flangeConnection} value={flangeConnection}>
+                      {flangeConnection}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>
+                  {errors.flangeConnection?.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* Instrumentation */}
+              <FormControl isInvalid={!!errors.instrumentation}>
+                <FormLabel fontWeight="bold">Instrumentation</FormLabel>
+                <Select
+                  {...register("instrumentation")}
+                  placeholder="Select Instrumentation"
+                >
+                  {instrumentation?.map((instrumentation) => (
+                    <option key={instrumentation} value={instrumentation}>
+                      {instrumentation}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>
+                  {errors.instrumentation?.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* OEM Part Number */}
+              <FormControl isInvalid={!!errors.oemPartNumber}>
+                <FormLabel fontWeight="bold">OEM Part Number</FormLabel>
+                <Input
+                  {...register("oemPartNumber")}
+                  placeholder="e.g OEM Part 001"
+                />
+                <FormErrorMessage>
+                  {errors.oemPartNumber?.message}
+                </FormErrorMessage>
+              </FormControl>
+
+              {/* ANSI */}
+              <FormControl isInvalid={!!errors.ansi}>
+                <FormLabel fontWeight="bold">ANSI</FormLabel>
+                <Input {...register("ansi")} placeholder="e.g ANSI Code" />
+                <FormErrorMessage>{errors.ansi?.message}</FormErrorMessage>
+              </FormControl>
+
+              {/* General Notes */}
+              <FormControl isInvalid={!!errors.generalNotes}>
+                <FormLabel fontWeight="bold">General Notes</FormLabel>
+                <Input
+                  {...register("generalNotes")}
+                  placeholder="General Notes"
+                />
+                <FormErrorMessage>
+                  {errors.generalNotes?.message}
+                </FormErrorMessage>
+              </FormControl>
+            </Grid>
+
+            {/* Image Upload */}
+            <FormControl mt={6}>
+              <FormLabel fontWeight="bold">Upload Image</FormLabel>
+              <Box
+                border="2px dashed"
+                borderColor="gray.200"
+                borderRadius="md"
+                p={4}
+                textAlign="center"
+                cursor="pointer"
+                _hover={{ borderColor: "teal.500" }}
               >
-                {assetHeaders?.map((assetHeader) => (
-                  <option key={assetHeader.id} value={assetHeader.id}>
-                    {assetHeader.id} - {assetHeader.assetNumber}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Duty</Text>
-              <Select {...register("duty")} placeholder="Duty">
-                {duty?.map((duty) => (
-                  <option key={duty} value={duty}>
-                    {duty}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-
-            {/* Second part */}
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Specification</Text>
-              <Select
-                {...register("specification")}
-                placeholder="Specification"
-              >
-                {specification?.map((specification) => (
-                  <option key={specification} value={specification}>
-                    {specification}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Valve Type</Text>
-              <Select {...register("valveType")} placeholder="Valve Type">
-                {valveType?.map((valveType) => (
-                  <option key={valveType} value={valveType}>
-                    {valveType}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-
-            {/* Third Part */}
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Valve Size</Text>
-              <Select {...register("valveSize")} placeholder="Valve Size">
-                {valveSize?.map((valveSize) => (
-                  <option key={valveSize} value={valveSize}>
-                    {valveSize}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Model</Text>
-              <Input {...register("model")} placeholder="e.g Model 001"></Input>
-            </VStack>
-
-            {/* Fourth Part */}
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Actuation</Text>
-              <Select {...register("actuation")} placeholder="Actuation">
-                {actuation?.map((actuation) => (
-                  <option key={actuation} value={actuation}>
-                    {actuation}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-            <VStack align="start">
-              <Text fontWeight="bold">Actuation Type</Text>
-              <Select
-                {...register("actuationType")}
-                placeholder="Actuation Type"
-              >
-                {actuationType?.map((actuationType) => (
-                  <option key={actuationType} value={actuationType}>
-                    {actuationType}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-
-            {/* Fifth Part */}
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Flange Connection</Text>
-              <Select
-                {...register("flangeConnection")}
-                placeholder="Flange Connection"
-              >
-                {flangeConnection?.map((flangeConnection) => (
-                  <option key={flangeConnection} value={flangeConnection}>
-                    {flangeConnection}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">Instrumentation</Text>
-              <Select
-                {...register("instrumentation")}
-                placeholder="Instrumentation"
-              >
-                {instrumentation?.map((instrumentation) => (
-                  <option key={instrumentation} value={instrumentation}>
-                    {instrumentation}
-                  </option>
-                ))}
-              </Select>
-            </VStack>
-
-            {/* Sixth Part */}
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">OEM Part Number</Text>
-              <Input
-                {...register("oemPartNumber")}
-                placeholder="e.g OEM Part 001"
-              ></Input>
-            </VStack>
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">ANSI</Text>
-              <Input {...register("ansi")} placeholder="e.g ANSI Code"></Input>
-            </VStack>
-
-            <VStack align="start" paddingY={3}>
-              <Text fontWeight="bold">General Notes</Text>
-              <Input
-                {...register("generalNotes")}
-                placeholder="General Notes"
-              ></Input>
-            </VStack>
-
-            {/* Image upload */}
-            <HStack>
-              <VStack align="start" w="full">
-                <Text fontWeight="bold">Upload Image</Text>
                 <Input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
                   multiple
+                  display="none"
+                  id="file-upload"
                 />
-                {selectedImage && (
-                  <Box mt={2}>
-                    <Text>Selected Image:</Text>
+                <label htmlFor="file-upload">
+                  <Icon as={FaUpload} w={8} h={8} color="gray.500" />
+                  <Text mt={2} color="gray.500">
+                    Drag & drop or click to upload
+                  </Text>
+                </label>
+              </Box>
+              {selectedImage.length > 0 && (
+                <Box mt={4}>
+                  <Text fontWeight="bold">Selected Images:</Text>
+                  <Flex mt={2} wrap="wrap">
                     {selectedImage.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image.image}
-                        alt="Selected"
-                        style={{ maxWidth: "100%" }}
-                      />
+                      <Box key={index} m={2}>
+                        <img
+                          src={image.image}
+                          alt={`Selected ${index}`}
+                          style={{ maxWidth: "500px", borderRadius: "md" }}
+                        />
+                      </Box>
                     ))}
-                  </Box>
-                )}
-              </VStack>
-            </HStack>
-            <Button
-              colorScheme="teal"
-              size="md"
-              marginTop={3}
-              type="submit"
-              disabled={isPending}
-            >
-              {isPending ? "Submitting" : "Submit"}
-            </Button>
+                  </Flex>
+                </Box>
+              )}
+            </FormControl>
+
+            {/* Submit Button */}
+            <Flex justifyContent="flex-end" mt={6}>
+              <Button
+                colorScheme="teal"
+                size="lg"
+                type="submit"
+                leftIcon={<Icon as={FaCheckCircle} />}
+                isLoading={isPending}
+                loadingText="Submitting"
+              >
+                Submit
+              </Button>
+            </Flex>
           </CardForms>
         </Flex>
       </form>

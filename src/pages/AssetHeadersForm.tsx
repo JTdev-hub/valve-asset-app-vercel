@@ -10,12 +10,15 @@ import {
   Select,
   VStack,
   Flex,
+  Heading,
+  Icon,
 } from "@chakra-ui/react";
 import useCustomers from "../hooks/useCustomers";
 import CardForms from "../components/CardForms";
 import useAddAssetHeaders from "../hooks/useAddAssetHeaders";
 import AlertBanner from "../components/AlertBanner";
 import Loading from "../components/Loading";
+import { FaCheckCircle } from "react-icons/fa";
 
 const schema = z.object({
   customerId: z.number(),
@@ -44,7 +47,7 @@ const AssetHeadersForm = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AssetHeadersFormData>({ resolver: zodResolver(schema) });
 
   const {
@@ -55,7 +58,7 @@ const AssetHeadersForm = () => {
     isPending,
     isSuccess,
   } = useAddAssetHeaders(() => {
-    //Reset fields on success
+    // Reset fields on success
     reset();
 
     // Hide success message after 5 seconds
@@ -79,21 +82,23 @@ const AssetHeadersForm = () => {
         />
       )}
 
-      {isPending && <Loading></Loading>}
-      <form
-        onSubmit={handleSubmit((data) => {
-          addAssetHeaders(data);
-        })}
-      >
+      {isPending && <Loading />}
+
+      <form onSubmit={handleSubmit((data) => addAssetHeaders(data))}>
         <Flex justifyContent="center">
           <CardForms>
-            <Stack spacing={3}>
-              <HStack>
-                <VStack align="start" flex="2">
+            <Heading as="h2" size="lg" textAlign="center" mb={6}>
+              Add Asset Header
+            </Heading>
+
+            <Stack spacing={4}>
+              <HStack spacing={4}>
+                <VStack align="start" flex="1">
                   <Text fontWeight="bold">Customer ID</Text>
                   <Select
                     {...register("customerId", { valueAsNumber: true })}
                     placeholder="Customer ID"
+                    isInvalid={!!errors.customerId}
                   >
                     {customers?.map((customer) => (
                       <option key={customer.id} value={customer.id}>
@@ -101,13 +106,20 @@ const AssetHeadersForm = () => {
                       </option>
                     ))}
                   </Select>
+                  {errors.customerId && (
+                    <Text fontSize="xs" color="red.500">
+                      {errors.customerId.message}
+                    </Text>
+                  )}
                 </VStack>
-                <VStack align="start" flex="2">
+
+                <VStack align="start" flex="1">
                   <Text fontWeight="bold">Asset Number</Text>
                   <Input
                     {...register("assetNumber")}
                     placeholder="e.g Asset 001"
-                  ></Input>
+                    isInvalid={!!errors.assetNumber}
+                  />
                   {errors.assetNumber && (
                     <Text fontSize="xs" color="red.500">
                       {errors.assetNumber.message}
@@ -115,36 +127,42 @@ const AssetHeadersForm = () => {
                   )}
                 </VStack>
               </HStack>
+
               <VStack align="start">
                 <Text fontWeight="bold">Asset Description</Text>
                 <Input
                   {...register("assetDescription")}
                   placeholder="e.g Valve for Hose 001"
-                ></Input>
+                  isInvalid={!!errors.assetDescription}
+                />
                 {errors.assetDescription && (
                   <Text fontSize="xs" color="red.500">
                     {errors.assetDescription.message}
                   </Text>
                 )}
               </VStack>
+
               <VStack align="start">
                 <Text fontWeight="bold">Asset Serial Number</Text>
                 <Input
                   {...register("assetSerialNo")}
                   placeholder="e.g ASNO001"
-                ></Input>
+                  isInvalid={!!errors.assetSerialNo}
+                />
                 {errors.assetSerialNo && (
                   <Text fontSize="xs" color="red.500">
                     {errors.assetSerialNo.message}
                   </Text>
                 )}
               </VStack>
+
               <VStack align="start">
                 <Text fontWeight="bold">Site Section</Text>
                 <Input
                   {...register("siteSection")}
                   placeholder="Site Section"
-                ></Input>
+                  isInvalid={!!errors.siteSection}
+                />
                 {errors.siteSection && (
                   <Text fontSize="xs" color="red.500">
                     {errors.siteSection.message}
@@ -152,14 +170,18 @@ const AssetHeadersForm = () => {
                 )}
               </VStack>
             </Stack>
+
             <Button
               colorScheme="teal"
               size="md"
-              marginTop={3}
+              marginTop={6}
               type="submit"
-              disabled={isPending}
+              leftIcon={<Icon as={FaCheckCircle} />}
+              isLoading={isSubmitting || isPending}
+              loadingText="Submitting"
+              width="full"
             >
-              {isPending ? "Submitting" : "Submit"}
+              Submit
             </Button>
           </CardForms>
         </Flex>
