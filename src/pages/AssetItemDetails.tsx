@@ -1,6 +1,15 @@
 import { useParams } from "react-router-dom";
-
-import { Text, Image, HStack, Stack, Flex } from "@chakra-ui/react";
+import {
+  Text,
+  Image,
+  Grid,
+  GridItem,
+  Stack,
+  Flex,
+  Divider,
+  Box,
+  Heading,
+} from "@chakra-ui/react";
 import CardForms from "../components/CardForms";
 import useAssetItemDetails from "../hooks/useAssetItemDetails";
 import SkeletonLoading from "../components/SkeletonLoading";
@@ -12,7 +21,7 @@ const AssetItemDetails = () => {
     parseInt(id!)
   );
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <Flex justifyContent="center">
         <CardForms>
@@ -20,63 +29,155 @@ const AssetItemDetails = () => {
         </CardForms>
       </Flex>
     );
+  }
+
+  if (!assetItemDetails || assetItemDetails.length === 0) {
+    return (
+      <Flex justifyContent="center">
+        <CardForms>
+          <Text>No asset item details found.</Text>
+        </CardForms>
+      </Flex>
+    );
+  }
+
   return (
     <Flex justifyContent="center">
       <CardForms>
         {assetItemDetails?.map((assetItemDetails) => (
-          <Stack spacing={3} key={assetItemDetails.id}>
-            <HStack>
-              <Text fontWeight="bold">Asset Number: </Text>
-              <Text>{assetItemDetails.assetHeader.assetNumber}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Duty: </Text>
-              <Text>{assetItemDetails.duty}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Specification: </Text>
-              <Text>{assetItemDetails.specification}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Valve Type: </Text>
-              <Text>{assetItemDetails.valveType}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Valve Size: </Text>
-              <Text>{assetItemDetails.valveSize}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Actuation: </Text>
-              <Text>{assetItemDetails.actuation}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Actuation Type: </Text>
-              <Text>{assetItemDetails.actuationType}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Flange Connection: </Text>
-              <Text>{assetItemDetails.flangeConnection}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">Instrumentation: </Text>
-              <Text>{assetItemDetails.instrumentation}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">OEM Part Number: </Text>
-              <Text>{assetItemDetails.oemPartNumber}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">ANSI: </Text>
-              <Text>{assetItemDetails.ansi}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">General Notes: </Text>
-              <Text>{assetItemDetails.generalNotes}</Text>
-            </HStack>
-            <Text fontWeight="bold">Image/s: </Text>
-            {assetItemDetails.images.split(";").map((image, index) => (
-              <Image src={getCroppedImageUrl(image)} key={index}></Image>
-            ))}
+          <Stack spacing={5} key={assetItemDetails.id}>
+            <Heading as="h2" size="lg" textAlign="center" mb={4}>
+              Asset Details
+            </Heading>
+
+            <Grid templateColumns="repeat(2, 1fr)" gap={4} alignItems="center">
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Asset Number:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.assetHeader.assetNumber}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Duty:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.duty}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Specification:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.specification}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Valve Type:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.valveType}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Valve Size:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.valveSize}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Actuation:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.actuation}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Actuation Type:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.actuationType}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Flange Connection:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.flangeConnection}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  Instrumentation:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.instrumentation}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  OEM Part Number:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.oemPartNumber}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  ANSI:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.ansi}</Text>
+              </GridItem>
+
+              <GridItem>
+                <Text fontWeight="bold" color="teal.500">
+                  General Notes:
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text>{assetItemDetails.generalNotes}</Text>
+              </GridItem>
+            </Grid>
+
+            <Divider my={4} />
+
+            <Box>
+              <Text fontWeight="bold" color="teal.500" mb={2}>
+                Image/s:
+              </Text>
+              <Flex wrap="wrap" gap={4}>
+                {assetItemDetails.images.split(";").map((image, index) => (
+                  <Image
+                    src={getCroppedImageUrl(image)}
+                    key={index}
+                    alt={`Asset Image ${index + 1}`}
+                    borderRadius="md"
+                    boxShadow="md"
+                  />
+                ))}
+              </Flex>
+            </Box>
           </Stack>
         ))}
       </CardForms>

@@ -1,4 +1,12 @@
-import { Button, Flex, Input, Stack, Text, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Input,
+  Stack,
+  Text,
+  VStack,
+  Heading,
+} from "@chakra-ui/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,7 +34,7 @@ const CustomerForm = () => {
     register,
     reset,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CustomerFormData>({ resolver: zodResolver(schema) });
 
   const {
@@ -37,13 +45,19 @@ const CustomerForm = () => {
     setShowAlert,
     isPending,
   } = useAddUsers(() => {
-    //Reset fields on success
-    reset();
-    // Hide success message after 5 seconds
+    reset(); // Reset fields on success
     setTimeout(() => {
-      setShowAlert(false);
+      setShowAlert(false); // Hide success message after 3 seconds
     }, 3000);
   });
+
+  const onSubmit = async (data: CustomerFormData) => {
+    await addCustomers([data]);
+    if (isSuccess || !isSuccess) {
+      window.scrollTo({ top: 0, behavior: "auto" }); // Scroll to top after submission
+    }
+  };
+
   return (
     <>
       {/* Display alert when success or when error */}
@@ -57,48 +71,57 @@ const CustomerForm = () => {
         />
       )}
 
-      {isPending && <Loading></Loading>}
-      <form
-        onSubmit={handleSubmit(async (data) => {
-          await addCustomers([data]);
-          if (isSuccess || !isSuccess) {
-            window.scrollTo({ top: 0, behavior: "auto" });
-          }
-        })}
-      >
+      {isPending && <Loading />}
+
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Flex justifyContent="center">
           <CardForms>
-            <Stack spacing={3}>
+            <Heading as="h2" size="lg" textAlign="center" mb={6}>
+              Add Customer
+            </Heading>
+
+            <Stack spacing={4}>
               <VStack align="start">
-                <Text fontWeight="bold">Customer Name</Text>
+                <Text fontWeight="bold" color="teal.500">
+                  Customer Name
+                </Text>
                 <Input
                   {...register("customerName")}
                   placeholder="e.g John"
-                ></Input>
+                  isInvalid={!!errors.customerName}
+                />
                 {errors.customerName && (
                   <Text fontSize="xs" color="red.500">
                     {errors.customerName.message}
                   </Text>
                 )}
               </VStack>
+
               <VStack align="start">
-                <Text fontWeight="bold">Customer Site</Text>
+                <Text fontWeight="bold" color="teal.500">
+                  Customer Site
+                </Text>
                 <Input
                   {...register("customerSite")}
                   placeholder="e.g Site 001"
-                ></Input>
+                  isInvalid={!!errors.customerSite}
+                />
                 {errors.customerSite && (
                   <Text fontSize="xs" color="red.500">
                     {errors.customerSite.message}
                   </Text>
                 )}
               </VStack>
+
               <VStack align="start">
-                <Text fontWeight="bold">Customer Contact</Text>
+                <Text fontWeight="bold" color="teal.500">
+                  Customer Contact
+                </Text>
                 <Input
                   {...register("customerContact")}
                   placeholder="e.g +639171234567"
-                ></Input>
+                  isInvalid={!!errors.customerContact}
+                />
                 {errors.customerContact && (
                   <Text fontSize="xs" color="red.500">
                     {errors.customerContact.message}
@@ -106,14 +129,17 @@ const CustomerForm = () => {
                 )}
               </VStack>
             </Stack>
+
             <Button
               colorScheme="teal"
               size="md"
-              marginTop={5}
+              marginTop={6}
               type="submit"
-              disabled={isPending}
+              isLoading={isSubmitting || isPending}
+              loadingText="Submitting"
+              width="full"
             >
-              {isPending ? " Submitting" : "Submit"}
+              Submit
             </Button>
           </CardForms>
         </Flex>
