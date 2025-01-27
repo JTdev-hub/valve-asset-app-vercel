@@ -11,6 +11,7 @@ import {
   FormErrorMessage,
   Icon,
   Heading,
+  Image,
 } from "@chakra-ui/react";
 import { FaUpload, FaCheckCircle } from "react-icons/fa";
 import CardForms from "../components/CardForms";
@@ -396,15 +397,17 @@ const AssetItemsForm = () => {
                 </label>
               </Box>
               {selectedImage.length > 0 && (
-                <Box mt={4}>
+                <Box mt={4} alignContent={"center"}>
                   <Text fontWeight="bold">Selected Images:</Text>
                   <Flex mt={2} wrap="wrap">
                     {selectedImage.map((image, index) => (
                       <Box key={index} m={2}>
-                        <img
+                        <Image
                           src={image.image}
                           alt={`Selected ${index}`}
-                          style={{ maxWidth: "500px", borderRadius: "md" }}
+                          style={{ maxWidth: "300px" }}
+                          borderRadius="md"
+                          boxShadow="md"
                         />
                       </Box>
                     ))}

@@ -9,17 +9,25 @@ import {
   Divider,
   Box,
   Heading,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import CardForms from "../components/CardForms";
 import useAssetItemDetails from "../hooks/useAssetItemDetails";
 import SkeletonLoading from "../components/SkeletonLoading";
 import getCroppedImageUrl from "../image-url";
+import { useState } from "react";
 
 const AssetItemDetails = () => {
   const { id } = useParams();
   const { data: assetItemDetails, isLoading } = useAssetItemDetails(
     parseInt(id!)
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (isLoading) {
     return (
@@ -40,6 +48,11 @@ const AssetItemDetails = () => {
       </Flex>
     );
   }
+
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
+    onOpen();
+  };
 
   return (
     <Flex justifyContent="center">
@@ -168,18 +181,37 @@ const AssetItemDetails = () => {
               </Text>
               <Flex wrap="wrap" gap={4}>
                 {assetItemDetails.images.split(";").map((image, index) => (
-                  <Image
-                    src={getCroppedImageUrl(image)}
+                  <Box
                     key={index}
-                    alt={`Asset Image ${index + 1}`}
-                    borderRadius="md"
-                    boxShadow="md"
-                  />
+                    onClick={() => handleImageClick(image)}
+                    cursor="pointer"
+                    _hover={{ opacity: 0.8 }}
+                  >
+                    <Image
+                      src={getCroppedImageUrl(image)}
+                      alt={`Asset Image ${index + 1}`}
+                      borderRadius="md"
+                      boxShadow="md"
+                    />
+                  </Box>
                 ))}
               </Flex>
             </Box>
           </Stack>
         ))}
+
+        {/* Modal for Image Preview */}
+        <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalCloseButton />
+            <Image
+              src={selectedImage ? getCroppedImageUrl(selectedImage) : ""}
+              alt="Enlarged Asset Image"
+              borderRadius="md"
+            />
+          </ModalContent>
+        </Modal>
       </CardForms>
     </Flex>
   );
