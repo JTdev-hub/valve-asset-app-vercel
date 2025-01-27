@@ -7,6 +7,7 @@ import useAddPhotos from "./useAddPhotos";
 
 import useUpdateAssetItem from "./useUpdateAssetItem";
 import { FormDataPayload } from "../pages/AssetItemsForm";
+import { AssetItemsWithHeaders } from "../services/assetItemsWithHeader-service";
 
 interface AssetItemForm {
   showAlert?: boolean;
@@ -27,7 +28,7 @@ const useAddAssetItems = (
 
   const queryClient = useQueryClient();
 
-  const mutate = useMutation<AssetItems, Error, AssetItems>({
+  const mutate = useMutation<AssetItemsWithHeaders, Error, AssetItems>({
     mutationFn: assetItemsService.create,
     onSuccess: async (savedAssetItem) => {
       try {
@@ -47,13 +48,16 @@ const useAddAssetItems = (
         const photoUrlList = photoUrls.map((photoUrl) => photoUrl).join(";");
         //TODO: Fix the secureURL
         updateAssetItem({
-          id: savedAssetItem.id as number,
+          assetItem: {
+            id: savedAssetItem.id as number,
+            assetHeaderId: savedAssetItem.assetHeaderId as number,
+          },
           body: photoUrlList as string,
         });
 
         setAssetItemForm({
           showAlert: true,
-          message: `Asset Item ${savedAssetItem.assetHeaderId} has been successfully created!`,
+          message: `Asset Item ${savedAssetItem.assetHeader.assetNumber} - ${savedAssetItem.id} has been successfully created!`,
           assetItemId: savedAssetItem.id || null,
         });
         onAdd();
@@ -61,7 +65,7 @@ const useAddAssetItems = (
         console.log(error);
         setAssetItemForm({
           showAlert: true,
-          message: `Encountered errors while saving image/s on ${savedAssetItem.assetHeaderId}`,
+          message: `Encountered errors while saving image/s on ${savedAssetItem.assetHeader.assetNumber}`,
           assetItemId: savedAssetItem.id || null,
         });
       }

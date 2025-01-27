@@ -34,6 +34,15 @@ class HttpService<TInput, TOutput> {
     return axiosInstance.get<TOutput[]>(url).then((res) => res.data);
   };
 
+  getAssetItemDetails = (assetItem: {
+    id: number;
+    assetHeaderId: number;
+  }): Promise<TOutput> => {
+    const url = `${this.endpoint}?id=${assetItem.id}&assetHeaderId=${assetItem.assetHeaderId}`;
+
+    return axiosInstance.get<TOutput>(url).then((res) => res.data);
+  };
+
   delete = (id: number) => {
     return axiosInstance.delete(this.endpoint + "/" + id);
   };
@@ -54,11 +63,25 @@ class HttpService<TInput, TOutput> {
       .then((res) => res.data);
   };
 
-  update = (id: number, body: string) => {
+  update = (
+    assetItem: {
+      id: number;
+      assetHeaderId: number;
+    },
+    body: string
+  ) => {
     return axiosInstance
-      .patch(this.endpoint + "?id=" + id, body, {
-        headers: { "Content-Type": "application/json" },
-      })
+      .patch(
+        this.endpoint +
+          "?id=" +
+          assetItem.id +
+          "&assetHeaderId=" +
+          assetItem.assetHeaderId,
+        body,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
       .then((res) => res.data);
   };
 }

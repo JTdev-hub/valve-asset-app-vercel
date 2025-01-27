@@ -32,7 +32,7 @@ const routes = createBrowserRouter([
       { path: "/createAssetItems", element: <AssetItemsForm /> },
       { path: "/viewAssetItems", element: <AssetItemTables /> },
       {
-        path: "/viewAssetItem/:id",
+        path: "/viewAssetItem/:id/:assetHeaderId",
         element: <AssetItemDetails />,
       },
       { path: "/uploadPhotos", element: <PhotoUpload /> },

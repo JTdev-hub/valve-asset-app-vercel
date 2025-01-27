@@ -75,13 +75,13 @@ const DataTable = ({ caption, columns, data, onSearch }: Props) => {
               </Tr>
             </Thead>
             <Tbody>
-              {data.map((row) => (
+              {data.map((row, index) => (
                 <Tr
-                  key={row.id}
+                  key={index}
                   _hover={{ bg: hoverBg, transition: "background 0.2s" }}
                 >
-                  {columns.map((column) => (
-                    <Td key={column.accessor} textAlign="left" py={3} px={4}>
+                  {columns.map((column, index) => (
+                    <Td key={index} textAlign="left" py={3} px={4}>
                       {column.accessor === "link" ? (
                         <Link to={row[column.accessor] as string}>
                           <Icon as={ChevronRightIcon} color="teal.500" />

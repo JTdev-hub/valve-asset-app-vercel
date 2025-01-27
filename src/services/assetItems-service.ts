@@ -1,3 +1,4 @@
+import { AssetItemsWithHeaders } from "./assetItemsWithHeader-service.js";
 import HttpService from "./http-service.js";
 
 export interface AssetItems {
@@ -18,4 +19,6 @@ export interface AssetItems {
   images: string;
 }
 
-export default new HttpService<AssetItems, AssetItems>("/assetItems");
+export default new HttpService<AssetItems, AssetItemsWithHeaders>(
+  "/assetItems"
+);

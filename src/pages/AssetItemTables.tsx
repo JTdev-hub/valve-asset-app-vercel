@@ -34,7 +34,7 @@ const AssetItemTables = () => {
             assetItemsWithHeaders?.map((item) => ({
               ...item.assetHeader,
               ...item,
-              link: `/viewAssetItem/${item.id}`,
+              link: `/viewAssetItem/${item.id}/${item.assetHeaderId}`,
             })) ?? []
           }
           onSearch={(assetItemQuery) => setAssetItemQuery(assetItemQuery)}

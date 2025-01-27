@@ -4,8 +4,13 @@ import assetItemUpdateService from "../services/assetItemUpdate-service";
 import { AssetItems } from "../services/assetItems-service";
 
 const useUpdateAssetItem = () => {
-  return useMutation<AssetItems, Error, { id: number; body: string }>({
-    mutationFn: ({ id, body }) => assetItemUpdateService.update(id, body),
+  return useMutation<
+    AssetItems,
+    Error,
+    { assetItem: { id: number; assetHeaderId: number }; body: string }
+  >({
+    mutationFn: ({ assetItem, body }) =>
+      assetItemUpdateService.update(assetItem, body),
   });
 };
 

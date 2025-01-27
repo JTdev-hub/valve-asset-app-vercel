@@ -5,6 +5,7 @@ export interface Column {
 
 export const assetItemColumns: Column[] = [
   { header: "Asset Number", accessor: "assetNumber" },
+  { header: "Asset Item", accessor: "id" },
   { header: "Duty", accessor: "duty" },
   { header: "Specification", accessor: "specification" },
   { header: "Valve Type", accessor: "valveType" },
